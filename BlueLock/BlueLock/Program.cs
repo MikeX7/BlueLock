@@ -12,7 +12,8 @@ namespace BlueLock
     public class Program
     {
         private static void Main(string[] args)
-        {            
+        {
+
             Console.Write("Welcome to ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("BlueLock");
@@ -20,6 +21,7 @@ namespace BlueLock
             Console.WriteLine("\nThis app allows you to use a bluetooth device as a way to lock your computer. After selecting a paired bluetooth device, BlueLock will periodically check if it's within range or not, and if it is not, then it will lock the computer. (Same thing as pressing Win + L).");
             Console.WriteLine("\nPress enter to continue...");
             Console.ReadLine();
+            
             Console.Clear();
 
             DeviceSelector();
@@ -58,7 +60,7 @@ namespace BlueLock
 
             var index = 0;
 
-            foreach (var device in devices)
+            foreach (var device in devices) // List all found devices so the user can select which one he wants to use
                 Console.WriteLine("{0} | {1} | {2}", ++index, device.DeviceName, device.LastSeen);
 
             Console.ResetColor();
@@ -69,7 +71,7 @@ namespace BlueLock
 
             int deviceId;
 
-            while (!Int32.TryParse(deviceIdText, out deviceId) || deviceId > devices.Length)
+            while (!Int32.TryParse(deviceIdText, out deviceId) || deviceId > devices.Length) // This allows the user to select which device he wants to use and it makes sure the selected device exists
             {
                 Console.WriteLine("The inserted ID is invalid, try again...");
                 deviceIdText = Console.ReadLine();
@@ -77,8 +79,13 @@ namespace BlueLock
 
             var selectedDevice = devices[deviceId - 1];
 
+            // Save the selected device info into the settings file, so we can load it after app launch
+            Properties.Settings.Default["LockDeviceName"] = selectedDevice.DeviceName;
+            Properties.Settings.Default["LockDeviceAdress"] = selectedDevice.DeviceAddress;
+            Properties.Settings.Default.Save();
+
             Console.WriteLine("\nYou have selected the {0}: {1} as a locking device, this concludes the setup. \nBlueLock will now lock this computer if it detects that {1} isn't in range.", deviceId, selectedDevice.DeviceName);
-            Console.WriteLine("Press enter to finish the setup...");
+            Console.WriteLine("Press enter to finish the setup...");            
 
             Console.ReadLine();
         }

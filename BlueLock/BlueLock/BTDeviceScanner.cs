@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace BlueLock
         /// </summary>
         public static BluetoothDeviceInfo[] GetDeviceList()
         {
+            
             Console.WriteLine("Scanning for paired bluetooth devices...");
 
             var client = new BluetoothClient();
@@ -28,10 +30,9 @@ namespace BlueLock
 
             Console.WriteLine("Scan finished.");
 
+            
+
             return pairedDevices;
-
-            //bc.DiscoverDevicesAsync(10, true, true, false, false, null);
-
         }
 
         /// <summary>
