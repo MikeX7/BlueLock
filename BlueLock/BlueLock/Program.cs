@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Timers;
 using System.Windows.Forms;
 using InTheHand.Net;
@@ -15,14 +14,15 @@ namespace BlueLock
         private static Timer _lockCheckTimer;
 
         private static void Main(string[] args)
-        {
-            //Console.WriteLine(Properties.Settings.Default.LockDeviceAdress);
-            //Console.ReadLine();
+        {            
 
             if (Properties.Settings.Default.LockDeviceAdress == 0 || (args.Length > 0 && args[0] == "setup"))
                 Setup();
             else
-            {                
+            {
+                if ((args.Length == 0 || args[0] != "console")) // Only hide the window if we don't receive an argument to show it
+                    WindowToggler.ShowWindow(WindowToggler.WindowState.Hide);                
+
                 _lockCheckTimer = new Timer
                 {
                     Interval = Properties.Settings.Default.LockCheckInterval * 1000,
@@ -34,7 +34,8 @@ namespace BlueLock
 
                 _lockCheckTimer.Start();
 
-                Console.ReadLine();
+                while (true) // This will prevent the application from being closed by pressing enter
+                    Console.ReadLine();
             }
         }
               
@@ -71,13 +72,13 @@ namespace BlueLock
 
             Console.Clear();
 
-            DeviceSelector();
+            ConfigEditor();
         }
 
         /// <summary>
-        /// Allows the user to select a BT device which we will use a lock check condition
+        /// Allows the user to select a BT device which we will use a lock check condition and change other settings
         /// </summary>
-        private static void DeviceSelector()
+        private static void ConfigEditor()
         {
             var devices = BtDeviceScanner.GetDeviceList();
 
@@ -112,7 +113,9 @@ namespace BlueLock
 
             Console.ResetColor();
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\n Write the ID of the device you want to use:");
+            Console.ResetColor();
 
             var deviceIdText = Console.ReadLine();
 
@@ -132,12 +135,12 @@ namespace BlueLock
             
 
             Console.WriteLine("\nYou have selected the {0}: {1} as a locking device. \nI will now lock this computer if I detect that {1} isn't within range.\n", deviceId, selectedDevice.DeviceName);
-
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Enter the interval at which I should check, if the selected device is within range, in seconds: (default value is 50) ");
+            Console.ResetColor();
             SendKeys.SendWait("50");
 
             var lockCheckIntervalText = Console.ReadLine();
-
             int lockCheckInterval;
 
             while (!Int32.TryParse(lockCheckIntervalText, out lockCheckInterval) || lockCheckInterval < 5) 
@@ -147,11 +150,30 @@ namespace BlueLock
             }
 
             Properties.Settings.Default["LockCheckInterval"] = lockCheckInterval;
-            Properties.Settings.Default.Save();
-
-            BootStarter.ToggleAutostart(true);
+            Properties.Settings.Default.Save();            
 
             Console.WriteLine("\nThe check will be executed every {0} seconds.", lockCheckInterval);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nWould you like for BlueLock to start automatically after boot? y/n");
+            Console.ResetColor();
+            Console.WriteLine("If you select NO, you can also achieve have the BlueLock start automatically when you log in, by creating a shortcut for the BlueLock.exe file and placing it into \n'C:\\Users\\[Username]\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup' folder. ");
+
+            var autoBoot = Console.ReadLine();            
+
+            while (autoBoot != "y" && autoBoot != "n")
+            {
+                Console.WriteLine("Invalid option, try again... insert y for yes or n for no.");
+                autoBoot = Console.ReadLine();
+            }
+
+            if(autoBoot == "y")
+                Console.WriteLine("BlueLock was set to autoboot.");
+            else
+                Console.WriteLine("BlueLock autoboot was removed.");
+
+            BootStarter.ToggleAutostart(autoBoot == "y");
+
             Console.WriteLine("\nThis concludes the setup.");
             Console.WriteLine("\nPress enter to finish the setup...");
             
