@@ -1,19 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using InTheHand.Net.Bluetooth;
+using System.Diagnostics;
+using System.Globalization;
+using System.Timers;
+using System.Windows.Forms;
+using InTheHand.Net;
+using Timer = System.Timers.Timer;
 
 
 namespace BlueLock
 {
     public class Program
     {
+        
+        private static Timer _lockCheckTimer;
+
         private static void Main(string[] args)
         {
+            //Console.WriteLine(Properties.Settings.Default.LockDeviceAdress);
+            //Console.ReadLine();
 
+            if (Properties.Settings.Default.LockDeviceAdress == 0 || (args.Length > 0 && args[0] == "setup"))
+                Setup();
+            else
+            {                
+                _lockCheckTimer = new Timer
+                {
+                    Interval = Properties.Settings.Default.LockCheckInterval * 1000,
+                    AutoReset = false
+                };
+                
+
+                _lockCheckTimer.Elapsed += LockCheck;
+
+                _lockCheckTimer.Start();
+
+                Console.ReadLine();
+            }
+        }
+              
+        private static void LockCheck(object sender, ElapsedEventArgs e)
+        {
+            LockCheck();
+        }
+
+        /// <summary>
+        /// Check if the lock device is within range and if not, lock the PC
+        /// </summary>
+        private static void LockCheck()
+        {
+            if (!BtDeviceScanner.IsDeviceInRange(new BluetoothAddress(Properties.Settings.Default.LockDeviceAdress)))
+            {
+                Console.WriteLine("Locking PC.");
+            }
+
+            _lockCheckTimer.Start(); // Wait for the device check to finish and then reset the timer
+        }
+
+        /// <summary>
+        /// Start the setup process, where the user selects the device to use
+        /// </summary>
+        private static void Setup()
+        {
             Console.Write("Welcome to ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("BlueLock");
@@ -21,7 +68,7 @@ namespace BlueLock
             Console.WriteLine("\nThis app allows you to use a bluetooth device as a way to lock your computer. After selecting a paired bluetooth device, BlueLock will periodically check if it's within range or not, and if it is not, then it will lock the computer. (Same thing as pressing Win + L).");
             Console.WriteLine("\nPress enter to continue...");
             Console.ReadLine();
-            
+
             Console.Clear();
 
             DeviceSelector();
@@ -81,13 +128,36 @@ namespace BlueLock
 
             // Save the selected device info into the settings file, so we can load it after app launch
             Properties.Settings.Default["LockDeviceName"] = selectedDevice.DeviceName;
-            Properties.Settings.Default["LockDeviceAdress"] = selectedDevice.DeviceAddress;
+            Properties.Settings.Default["LockDeviceAdress"] = selectedDevice.DeviceAddress.ToInt64();
+            
+
+            Console.WriteLine("\nYou have selected the {0}: {1} as a locking device. \nI will now lock this computer if I detect that {1} isn't within range.\n", deviceId, selectedDevice.DeviceName);
+
+            Console.WriteLine("Enter the interval at which I should check, if the selected device is within range, in seconds: (default value is 50) ");
+            SendKeys.SendWait("50");
+
+            var lockCheckIntervalText = Console.ReadLine();
+
+            int lockCheckInterval;
+
+            while (!Int32.TryParse(lockCheckIntervalText, out lockCheckInterval) || lockCheckInterval < 5) 
+            {
+                Console.WriteLine("The inserted interval is invalid, or too small, try again...");
+                lockCheckIntervalText = Console.ReadLine();
+            }
+
+            Properties.Settings.Default["LockCheckInterval"] = lockCheckInterval;
             Properties.Settings.Default.Save();
 
-            Console.WriteLine("\nYou have selected the {0}: {1} as a locking device, this concludes the setup. \nBlueLock will now lock this computer if it detects that {1} isn't in range.", deviceId, selectedDevice.DeviceName);
-            Console.WriteLine("Press enter to finish the setup...");            
+            BootStarter.ToggleAutostart(true);
 
+            Console.WriteLine("\nThe check will be executed every {0} seconds.", lockCheckInterval);
+            Console.WriteLine("\nThis concludes the setup.");
+            Console.WriteLine("\nPress enter to finish the setup...");
+            
             Console.ReadLine();
+
+            Process.Start("BlueLock.exe"); // As this application closes, start a new instance of it so it can start doing its thing            
         }
 
 

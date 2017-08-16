@@ -37,10 +37,10 @@ namespace BlueLock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LockDeviceAdress {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public long LockDeviceAdress {
             get {
-                return ((string)(this["LockDeviceAdress"]));
+                return ((long)(this["LockDeviceAdress"]));
             }
             set {
                 this["LockDeviceAdress"] = value;
@@ -49,13 +49,13 @@ namespace BlueLock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseName {
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int LockCheckInterval {
             get {
-                return ((bool)(this["UseName"]));
+                return ((int)(this["LockCheckInterval"]));
             }
             set {
-                this["UseName"] = value;
+                this["LockCheckInterval"] = value;
             }
         }
     }

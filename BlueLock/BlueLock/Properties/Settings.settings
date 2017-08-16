@@ -5,11 +5,11 @@
     <Setting Name="LockDeviceName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="LockDeviceAdress" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="LockDeviceAdress" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="UseName" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="LockCheckInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
     </Setting>
   </Settings>
 </SettingsFile>
