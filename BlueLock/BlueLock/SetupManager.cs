@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BlueLock
@@ -151,7 +147,7 @@ namespace BlueLock
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nWould you like for BlueLock to start automatically after boot? y/n");
             Console.ResetColor();
-            Console.WriteLine("If you select NO, you can also achieve have the BlueLock start automatically when you log in, by creating a shortcut for the BlueLock.exe file and placing it into \n'C:\\Users\\[Username]\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup' folder. ");
+            Console.WriteLine("If you select NO, you can also achieve autoboot, by creating a shortcut for the BlueLock.exe file and placing it into \n'C:\\Users\\[Username]\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup' folder. ");
 
             var autoBoot = Console.ReadLine();
 
@@ -176,7 +172,8 @@ namespace BlueLock
         {            
             Properties.Settings.Default.Save();
 
-            Console.WriteLine("\nThis concludes the setup.");
+            Console.WriteLine("\nThis concludes the setup. I will not restart and start doing my job.");
+            Console.WriteLine("If you wish to run this setup again in the future, start the BlueLock.exe with the command line parameter 'setup' without quotes.");
             Console.WriteLine("\nPress enter to finish the setup...");
 
             Console.ReadLine();

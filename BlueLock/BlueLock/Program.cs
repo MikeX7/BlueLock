@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Timers;
-using System.Windows.Forms;
 using InTheHand.Net;
 using Timer = System.Timers.Timer;
 
@@ -15,7 +12,6 @@ namespace BlueLock
 
         private static void Main(string[] args)
         {            
-
             if (Properties.Settings.Default.LockDeviceAdress == 0 || (args.Length > 0 && args[0] == "setup"))
                 SetupManager.Setup();
             else
@@ -52,7 +48,7 @@ namespace BlueLock
 
                     try
                     {
-                        //Locker.LockWorkStation();
+                        Locker.LockWorkStation();
                     }
                     catch
                     {

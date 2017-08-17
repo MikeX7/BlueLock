@@ -12,6 +12,6 @@ namespace BlueLock
         /// Lock the computer (same as pressing Win + L)
         /// </summary>
         [DllImport("user32")]
-        public static extern void LockWorkStation();
+        public static extern void LockWorkStation();        
     }
 }
