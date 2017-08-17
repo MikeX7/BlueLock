@@ -125,7 +125,7 @@ namespace BlueLock
         private static void LockTimeoutSelector()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Enter the amount of time in seconds, after which the PC should be locked if the lock device is not detected: ");
+            Console.WriteLine("Enter the amount of time in seconds, after which the PC should be locked, if the lock device is not detected during it: ");            
             Console.ResetColor();
             SendKeys.SendWait("30");
 
@@ -139,6 +139,8 @@ namespace BlueLock
             }
 
             Properties.Settings.Default["LockTimeout"] = lockTimeout;
+
+            Console.WriteLine("\nThe PC will lock, if the lock device is missing for longer than {0} seconds.", lockTimeout);
         }
 
         /// <summary>

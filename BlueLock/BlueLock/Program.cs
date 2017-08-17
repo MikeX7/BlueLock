@@ -10,7 +10,7 @@ namespace BlueLock
 {
     public class Program
     {
-        
+        private static DateTime _lastTimeLockDeviceInRange; // When was the last time we detected the lock device
         private static Timer _lockCheckTimer;
 
         private static void Main(string[] args)
@@ -46,17 +46,22 @@ namespace BlueLock
         {
             if (!BtDeviceScanner.IsDeviceInRange(new BluetoothAddress(Properties.Settings.Default.LockDeviceAdress)))
             {
-                Console.WriteLine("Locking PC.");
+                if ((DateTime.Now - _lastTimeLockDeviceInRange).TotalSeconds > Properties.Settings.Default.LockTimeout) // Even though the device is not in range, don't lock the computer until it is not in range for the lock timeout amount of seconds
+                {
+                    Console.WriteLine("Locking PC.");
 
-                try
-                {
-                    //Locker.LockWorkStation();
-                }
-                catch
-                {
-                    // ignored
+                    try
+                    {
+                        //Locker.LockWorkStation();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
+            else
+                _lastTimeLockDeviceInRange = DateTime.Now;
 
             _lockCheckTimer.Start(); // Wait for the device check to finish and then reset the timer
         }
