@@ -58,5 +58,17 @@ namespace BlueLock.Properties {
                 this["LockCheckInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int LockTimeout {
+            get {
+                return ((int)(this["LockTimeout"]));
+            }
+            set {
+                this["LockTimeout"] = value;
+            }
+        }
     }
 }
