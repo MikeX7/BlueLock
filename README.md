@@ -8,7 +8,7 @@ Usage:
 
 Requirements:
 - Windows XP or higher
-- Bluetooth support (often built on in laptops, for desktop computers you can use a Bluetooth dongle)
+- Bluetooth support (often built-in in laptops, for desktop computers you can use a Bluetooth dongle)
 
 The setup is done in a console, but it is very easy, simply read and follow the instructions.
 If you want to run the setup again in the future, run the BlueLock.exe with a parameter "setup" without quotes.
