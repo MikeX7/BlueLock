@@ -9,5 +9,6 @@ Usage:
 The setup is done in a console, but it is very easy, simply read and follow the instructions.
 If you want to run the setup again in the future, run the BlueLock.exe with a paramter "setup" without quotes.
 
+Unlocking your computer when the device comes back into range: This cannot be done. For security reasons, only the user can unlock the computer, once it's locked. (Well it can be done, but through some pretty hacky and ugly ways, which aren't available in BlueLock, sorry.)
 
 Thank you for using BlueLock.
